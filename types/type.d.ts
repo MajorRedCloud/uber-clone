@@ -13,7 +13,7 @@ declare interface Driver {
 declare interface MarkerData {
   latitude: number;
   longitude: number;
-  id: number;
+  id: number | null;
   title: string;
   profile_image_url: string;
   car_image_url: string;
@@ -67,6 +67,18 @@ declare interface GoogleInputProps {
   initialLocation?: string;
   containerStyle?: string;
   textInputBackgroundColor?: string;
+  handlePress: ({
+    latitude,
+    longitude,
+    address,
+  }: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  }) => void;
+}
+
+declare interface OlaInputProps {
   handlePress: ({
     latitude,
     longitude,
@@ -136,4 +148,36 @@ declare interface DriverCardProps {
   item: MarkerData;
   selected: number;
   setSelected: () => void;
+}
+
+declare interface Prediction {
+  reference: string;
+  types: string[];
+  matched_substrings: {
+    offset: number;
+    length: number;
+  }[];
+  terms: {
+    offset: number;
+    value: string;
+  }[];
+  distance_meters: number;
+  structured_formatting: {
+    main_text_matched_substrings: {
+      offset: number;
+      length: number;
+    }[];
+    secondary_text_matched_substrings: any[]; // Adjust this if you know the structure
+    secondary_text: string;
+    main_text: string;
+  };
+  description: string;
+  geometry: {
+    location: {
+      lng: number;
+      lat: number;
+    };
+  };
+  place_id: string;
+  layer: string[];
 }

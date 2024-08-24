@@ -92,3 +92,8 @@ export const WelcomeArray = [
     image: onboarding3,
   },
 ];
+
+export const randomize = (value:string) => {
+  const num = Math.abs(Math.random() * 1000)
+  return `${value}-${num}`
+}

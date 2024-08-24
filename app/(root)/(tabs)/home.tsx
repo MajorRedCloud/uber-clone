@@ -1,13 +1,16 @@
+import GoogleCustomInput from "@/components/GoogleCustomInput";
 import RideCard from "@/components/RideCard";
-import { images } from "@/constants";
+import { icons, images } from "@/constants";
+import { useLocationStore } from "@/store";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
-import { Image, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from "react-native";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Location from 'expo-location';
 
 const rides = [
   {
@@ -117,14 +120,53 @@ const rides = [
 ];
 
 export default function Home() {
+
+  const {setUserLocation, setDestinationLocation} = useLocationStore();
+
   const { user } = useUser();
   const [loading, setLoading] = useState(true);
+  const [hasPermission, setHasPermission] = useState(false)
+
+  const handleLogOut = () => {
+
+  }
+
+  const handleDestinationPress = () => {
+
+  }
+
+  useEffect(() => {
+    const requestLocation = async () => {
+      let {status} = await Location.requestForegroundPermissionsAsync()
+      
+      if(status !== 'granted') {
+        setHasPermission(false)
+        return
+      }
+      
+      let location = await Location.getCurrentPositionAsync()
+      
+      const address = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      })
+      
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        address: `${address[0].name}, ${address[0].region}`
+      })
+      
+    }
+
+
+    requestLocation()
+  }, [])
 
   return (
     <SafeAreaView className="bg-general-500 h-screen">
       <FlashList
-        // data={rides?.slice(0, 5)}
-        data={[]}
+        data={rides?.slice(0, 5)}
         renderItem={({ item }) => <RideCard item={item} />}
         estimatedItemSize={17}
         contentContainerStyle={{
@@ -148,12 +190,38 @@ export default function Home() {
               </>
             ) : (
               <>
-                <View>
-                  <Text>loading...</Text>
+                <View className="items-center justify-center h-screen">
+                  <ActivityIndicator size="large" color="black" />
+                  <Text className="mt-4 text-lg font-JakartaBold">Loading</Text>
                 </View>
               </>
             )}
           </View>
+        )}
+        ListHeaderComponent={() => (
+          <>
+            <View className="flex flex-row items-center justify-between my-5">
+    
+              <Text className="text-xl font-JakartaExtraBold mx-4 ">
+                Welcome {user?.firstName || user?.emailAddresses[0].emailAddress.split('@')[0] }
+              </Text>
+    
+              <TouchableOpacity onPress={handleLogOut} 
+                className="h-10 w-10 justify-center items-center rounded-full mx-3">
+                <Image 
+                  source={icons.out} 
+                  className="w-5 h-5"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <GoogleCustomInput 
+              icon={icons.search}
+              containerStyle="bg-white shadow-xl shadow-neutral-300"
+              handlePress={handleDestinationPress}
+            />
+
+          </>
         )}
         keyboardShouldPersistTaps="handled"
       />
