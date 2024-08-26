@@ -4,41 +4,53 @@ import { fetchPredictions } from '@/lib/fetch'
 import { OlaInputProps, Prediction } from '@/types/type'
 import { icons, randomize } from '@/constants'
 
-const OlaMapsAutocomplete = ({handlePress} : OlaInputProps) => {
+const OlaMapsAutocomplete = ({
+  icon,
+  initialLocation,
+  containerStyle,
+  textInputBackgroundColor,
+  isHome,
+  handlePress,
+}: OlaInputProps) => {
+  const [query, setQuery] = useState(initialLocation || '');
+  const [predictions, setPredictions] = useState([]);
 
-    const [query, setQuery] = useState('')
-    const [predictions, setPredictions] = useState([])
+  // for test
+  const latitude = 22.724843;
+  const longitude = 75.921226;
+  const radius = 100000;
 
-    // for test
-    const latitude = 22.724843
-    const longitude = 75.921226
-    const radius = 100000
+  useEffect(() => {
+    if (query.length < 3) {
+      setPredictions([]);
+      return;
+    }
 
-    useEffect(() => {
-      if(query.length < 3){
-          setPredictions([])
-          return }
-        
-        const fetchData = async () => {
-            const response = await fetchPredictions({query, latitude, longitude, radius})
-            if(response){
-                setPredictions(response.predictions);
-            }
-        }
-        
-        fetchData()
-    }, [query])
+    const fetchData = async () => {
+      const response = await fetchPredictions({
+        query,
+        latitude,
+        longitude,
+        radius,
+      });
+      if (response) {
+        setPredictions(response.predictions);
+      }
+    };
+
+    fetchData();
+  }, [query]);
 
   return (
-    <View className="flex flex-1 relative">
+    <View className={`flex flex-1 relative ${containerStyle} justify-center`}>
       <Image
-        source={icons.search}
+        source={icon ? icon : icons.search}
         className="w-6 h-6 absolute left-2 top-2 transform"
         resizeMode="contain"
       />
       <View className="flex flex-1 align-center justify-center rounded-xl mx-4 relative">
         <TextInput
-          className="flex-1 text-[14px] w-full font-JakartaSemiBold my-1 ml-6"
+          className="flex-1 text-[14px] w-full font-JakartaSemiBold my-1 ml-6 "
           placeholder="Where do you want to go?"
           value={query}
           onChangeText={(value) => setQuery(value)}
@@ -51,7 +63,6 @@ const OlaMapsAutocomplete = ({handlePress} : OlaInputProps) => {
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={(data, details = null) => {
-          
                   handlePress({
                     latitude: item?.geometry.location.lat!,
                     longitude: item?.geometry.location.lng!,
@@ -85,6 +96,6 @@ const OlaMapsAutocomplete = ({handlePress} : OlaInputProps) => {
       </View>
     </View>
   );
-}
+};
 
 export default OlaMapsAutocomplete

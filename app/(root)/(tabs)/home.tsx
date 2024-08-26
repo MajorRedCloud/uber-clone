@@ -4,7 +4,7 @@ import { icons, images } from "@/constants";
 import { useLocationStore } from "@/store";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Image, Text, TouchableOpacity, View } from "react-native";
@@ -121,6 +121,8 @@ const rides = [
 
 export default function Home() {
 
+  const router = useRouter()
+
   const {setUserLocation, setDestinationLocation} = useLocationStore();
 
   const { user } = useUser();
@@ -131,8 +133,14 @@ export default function Home() {
 
   }
 
-  const handleDestinationPress = () => {
+  const handleDestinationPress = (location: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  }) => {
+    setDestinationLocation(location)
 
+    router.push('(root)/find-ride')
   }
 
   useEffect(() => {

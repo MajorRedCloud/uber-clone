@@ -67,6 +67,7 @@ declare interface GoogleInputProps {
   initialLocation?: string;
   containerStyle?: string;
   textInputBackgroundColor?: string;
+  isHome?:boolean
   handlePress: ({
     latitude,
     longitude,
@@ -79,6 +80,11 @@ declare interface GoogleInputProps {
 }
 
 declare interface OlaInputProps {
+  icon?: string;
+  initialLocation?: string;
+  containerStyle?: string;
+  textInputBackgroundColor?: string;
+  isHome?: boolean;
   handlePress: ({
     latitude,
     longitude,
