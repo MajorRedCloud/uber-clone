@@ -6,7 +6,7 @@ import { icons } from '@/constants'
 import Map from './Map'
 import BottomSheet, { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet'
 
-const RideLayout = ({title, children}: {children: ReactNode, title?:string}) => {
+const RideLayout = ({title, children, snapPoints}: {children: ReactNode, title?:string, snapPoints?:string[]}) => {
 
     const router = useRouter()
     const bottomSheetRef = useRef<BottomSheet>(null)
@@ -36,7 +36,7 @@ const RideLayout = ({title, children}: {children: ReactNode, title?:string}) => 
         </View>
 
         <BottomSheet ref={bottomSheetRef} 
-            snapPoints={['45%', '85%']}
+            snapPoints={snapPoints || ['45%', '85%']}
             index={0}
         >
             <BottomSheetView style={{flex:1, padding: 20}}>

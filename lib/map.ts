@@ -1,6 +1,6 @@
 import { Driver, MarkerData } from "@/types/type";
 
-const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
+const directionsAPI = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 export const generateMarkersFromData = ({
   data,
@@ -101,6 +101,7 @@ export const calculateDriverTimes = async ({
       const dataToUser = await responseToUser.json();
       const timeToUser = dataToUser.routes[0].legs[0].duration.value; // Time in seconds
 
+
       const responseToDestination = await fetch(
         `https://maps.googleapis.com/maps/api/directions/json?origin=${userLatitude},${userLongitude}&destination=${destinationLatitude},${destinationLongitude}&key=${directionsAPI}`
       );
@@ -109,7 +110,7 @@ export const calculateDriverTimes = async ({
         dataToDestination.routes[0].legs[0].duration.value; // Time in seconds
 
       const totalTime = (timeToUser + timeToDestination) / 60; // Total time in minutes
-      const price = (totalTime * 0.5).toFixed(2); // Calculate price based on time
+      const price = parseFloat((totalTime * 0.5).toFixed(2)) * 20; // Calculate price based on time
 
       return { ...marker, time: totalTime, price };
     });
