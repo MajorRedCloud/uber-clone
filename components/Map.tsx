@@ -6,6 +6,7 @@ import { calculateDriverTimes, calculateRegion, generateMarkersFromData } from '
 import { Driver, MarkerData } from '@/types/type'
 import { icons } from '@/constants'
 import { fetchAPI, useFetch } from '@/lib/fetch'
+import MapViewDirections from 'react-native-maps-directions'
 
 // const drivers = 
 //   [
@@ -91,7 +92,7 @@ const Map = () => {
         setMarkers(newMarkers)
         
       }  
-    }, [drivers])
+    }, [drivers, userLatitude, userLongitude])
 
     useEffect(() => {
       if(markers.length > 0 && destinationLatitude && destinationLongitude){
@@ -125,29 +126,58 @@ const Map = () => {
 
   return (
     <MapView
-        className='h-full w-full rounded-full'
-        provider={PROVIDER_DEFAULT}
-        tintColor='black'
-        mapType='standard'
-        showsPointsOfInterest={false}
-        showsUserLocation={true}
-        userInterfaceStyle='light'
+      className="h-full w-full rounded-full
+      "
+      provider={PROVIDER_DEFAULT}
+      tintColor="black"
+      mapType="standard"
+      showsPointsOfInterest={false}
+      showsUserLocation={true}
+      userInterfaceStyle="light"
+      initialRegion={region}
+      followsUserLocation={true}
     >
       {markers.map((marker) => (
-        <Marker 
+        <Marker
           key={marker.id}
           coordinate={{
             latitude: marker.latitude,
-            longitude: marker.longitude
-          }} 
+            longitude: marker.longitude,
+          }}
           title={marker.title}
           image={
             selectedDriver! === marker.id! ? icons.selectedMarker : icons.marker
           }
         />
-        ))}
+      ))}
+
+      {destinationLatitude && destinationLongitude && (
+        <Marker
+          key={"destination"}
+          coordinate={{
+            latitude: destinationLatitude,
+            longitude: destinationLongitude,
+          }}
+          title="Destination"
+          image={icons.pin}
+        />
+      )}
+
+      <MapViewDirections
+        origin={{
+          latitude: userLatitude,
+          longitude: userLongitude,
+        }}
+        destination={{
+          latitude: destinationLatitude!,
+          longitude: destinationLongitude!,
+        }}
+        apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!}
+        strokeWidth={2}
+        strokeColor="#0286ff"
+      />
     </MapView>
-  )
+  );
 }
 
 export default Map
