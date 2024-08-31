@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "postinstall": "node ./bin/postInstall && node react-native-map-web-fix.js"
   },
   "jest": {
     "preset": "jest-expo"
@@ -22,7 +23,6 @@
     "@neondatabase/serverless": "^0.9.4",
     "@react-navigation/native": "^6.0.2",
     "@shopify/flash-list": "1.6.4",
-    "@stripe/stripe-react-native": "^0.38.4",
     "crypto": "^1.0.1",
     "crypto-js": "^4.2.0",
     "eslint-config-universe": "^13.0.0",
@@ -55,7 +55,6 @@
     "react-native-screens": "3.31.1",
     "react-native-swiper": "^1.6.0",
     "react-native-web": "~0.19.10",
-    "stripe": "^16.8.0",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
@@ -74,6 +73,9 @@
     "rn-nodeify": "github:tradle/rn-nodeify",
     "tailwindcss": "^3.3.2",
     "typescript": "~5.3.3"
+  },
+  "browser": {
+    "crypto": false
   },
   "private": true
 }

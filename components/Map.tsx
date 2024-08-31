@@ -68,6 +68,8 @@ const Map = () => {
         destinationLatitude
     } = useLocationStore()
 
+    const flag = destinationLatitude && destinationLongitude ? true : false
+
     const {selectedDriver, setDrivers} = useDriverStore()
     const [markers, setMarkers] = useState<MarkerData[]>([])
 
@@ -168,10 +170,12 @@ const Map = () => {
           latitude: userLatitude,
           longitude: userLongitude,
         }}
-        destination={{
-          latitude: destinationLatitude!,
-          longitude: destinationLongitude!,
-        }}
+        destination={
+          flag ? 
+          {latitude: destinationLatitude!,
+          longitude: destinationLongitude!,}
+          : undefined 
+        }
         apikey={process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY!}
         strokeWidth={2}
         strokeColor="#0286ff"
